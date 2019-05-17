@@ -1,13 +1,22 @@
 <template>
   <div id="app">
-    <example-component></example-component>
+    <g-map :apiKey="this.apiKey"></g-map>
   </div>
 </template>
 
 <script>
-    export default {
-        name: "App"
+  import Env from './environment/index';
+
+  export default {
+    name: "App",
+    data () {
+      return {
+        apiKey: Env.API_KEY
+      }
+    },
+    mounted() {
     }
+  }
 </script>
 
 <style scoped>

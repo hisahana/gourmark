@@ -25,7 +25,7 @@
       },
       zoom: {
         type: Number,
-        default: 8
+        default: 18
       },
       markers: {
         type: Array,
@@ -34,25 +34,39 @@
         }
       }
     },
-    data () {
+    watch: {
+      lat: {
+        handler() {
+          this.map.setCenter({ lat: this.lat, lng: this.lng });
+        }
+      },
+      lng: {
+        handler() {
+          this.map.setCenter({ lat: this.lat, lng: this.lng });
+        }
+      }
+    },
+    data() {
       return {
+        google: null,
         map: null,
         formattedMarkers: [],
         mapWidth: 100,
         mapHeight: 100
       };
     },
-    created () {
+    created() {
       this.mapWidth = window.innerWidth;
       this.mapHeight = window.innerHeight;
     },
-    mounted () {
+    mounted() {
       GoogleMapsLoader.KEY = this.apiKey;
-      GoogleMapsLoader.LANGUAGE = 'ja';
+      GoogleMapsLoader.LANGUAGE = "ja";
+      GoogleMapsLoader.VERSION = "3.37";
       GoogleMapsLoader.load(this.loadMap);
       window.addEventListener('resize', this.handleResize)
     },
-    beforeDestroy () {
+    beforeDestroy() {
       window.removeEventListener('resize', this.handleResize)
     },
     methods: {
@@ -60,6 +74,7 @@
         this.map = new google.maps.Map(document.getElementById("map"), {
           center: { lat: this.lat, lng: this.lng },
           zoom: this.zoom,
+          disableDefaultUI: true,
           gestureHandling: "greedy"
         });
       },

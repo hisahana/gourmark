@@ -4,6 +4,7 @@
       :apiKey="this.apiKey"
       :lat="this.lat"
       :lng="this.lng"
+      :markers="this.markers"
     >
     </g-map>
   </div>
@@ -18,7 +19,8 @@
       return {
         apiKey: Env.API_KEY,
         lat: 0,
-        lng: 0
+        lng: 0,
+        markers: []
       }
     },
     mounted() {
@@ -26,7 +28,20 @@
       navigator.geolocation.getCurrentPosition((position) => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
+        this.fetchMarkers();
       });
+    },
+    methods: {
+      fetchMarkers() {
+        // 現在位置付近のマーカーを取得
+        // zoomも親から渡す必要がありそう
+        this.markers = [
+          { position: { lat: this.lat, lng: this.lng } },
+          { position: { lat: 35.762448, lng: 139.533698 } },
+          { position: { lat: 35.762069, lng: 139.534245 } },
+          { position: { lat: 35.762033, lng: 139.533656 } },
+        ]
+      }
     }
   }
 </script>

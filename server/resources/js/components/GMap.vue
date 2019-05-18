@@ -44,6 +44,16 @@
         handler() {
           this.map.setCenter({ lat: this.lat, lng: this.lng });
         }
+      },
+      markers: {
+        handler() {
+          this.formattedMarkers.forEach(marker => {
+            marker.setMap(null);
+          });
+          this.formattedMarkers.splice(0, this.formattedMarkers.length);
+
+          this.addMarker();
+        }
       }
     },
     data() {
@@ -71,11 +81,33 @@
     },
     methods: {
       loadMap(google) {
+        this.google = google;
         this.map = new google.maps.Map(document.getElementById("map"), {
           center: { lat: this.lat, lng: this.lng },
           zoom: this.zoom,
           disableDefaultUI: true,
           gestureHandling: "greedy"
+        });
+        this.addMarker();
+      },
+      addMarker() {
+        this.markers.forEach(markerInfo => {
+          let contentString = "hoge";
+          let marker = new this.google.maps.Marker({
+            position: markerInfo.position,
+            map: this.map,
+            animation: this.google.maps.Animation.DROP
+          });
+
+          let infoWindow = new this.google.maps.InfoWindow({
+            content: contentString
+          });
+
+          marker.addListener("click", () => {
+            infoWindow.open(this.map, marker)
+          });
+
+          this.formattedMarkers.push(marker);
         });
       },
       handleResize() {

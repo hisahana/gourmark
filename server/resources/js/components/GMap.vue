@@ -62,7 +62,8 @@
         map: null,
         formattedMarkers: [],
         mapWidth: 100,
-        mapHeight: 100
+        mapHeight: 100,
+        pressTimer: null
       };
     },
     created() {
@@ -86,8 +87,11 @@
           center: { lat: this.lat, lng: this.lng },
           zoom: this.zoom,
           disableDefaultUI: true,
+          clickableIcons: false,
           gestureHandling: "greedy"
         });
+        this.map.addListener("mousedown", this.handleMouseDown);
+        this.map.addListener("mouseup", this.handleMouseUp);
         this.addMarker();
       },
       addMarker() {
@@ -104,6 +108,8 @@
           });
 
           marker.addListener("click", () => {
+            event.stopPropagation();
+
             infoWindow.open(this.map, marker)
           });
 
@@ -113,6 +119,17 @@
       handleResize() {
         this.mapWidth = window.innerWidth;
         this.mapHeight = window.innerHeight;
+      },
+      handleMouseDown(e) {
+        this.pressTimer = setTimeout(() => {
+          this.handleLongClick(e);
+        }, 500);
+      },
+      handleMouseUp() {
+        clearTimeout(this.pressTimer);
+      },
+      handleLongClick(e) {
+        this.$emit('longClick', e);
       }
     }
   }

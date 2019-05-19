@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "google-maps": "^3.3.0"
+        "google-maps": "^3.3.0",
+        "vue2-touch-events": "^2.0.0"
     }
 }

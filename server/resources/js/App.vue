@@ -1,17 +1,22 @@
 <template>
   <div id="app">
     <g-map
-      :apiKey="this.apiKey"
-      :lat="this.lat"
-      :lng="this.lng"
-      :markers="this.markers"
-    >
+        :apiKey="this.apiKey"
+        :lat="this.lat"
+        :lng="this.lng"
+        :markers="this.markers"
+        @longClick="showAddMarker"
+      >
     </g-map>
   </div>
 </template>
 
 <script>
   import Env from './environment/index';
+  import Vue from 'vue'
+  import Vue2TouchEvents from 'vue2-touch-events'
+
+  Vue.use(Vue2TouchEvents);
 
   export default {
     name: "App",
@@ -41,6 +46,9 @@
           { position: { lat: 35.762069, lng: 139.534245 } },
           { position: { lat: 35.762033, lng: 139.533656 } },
         ]
+      },
+      showAddMarker(e) {
+        console.log(e);
       }
     }
   }

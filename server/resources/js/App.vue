@@ -8,24 +8,29 @@
         @longClick="showAddMarker"
       >
     </g-map>
+    <register-as-marker-view
+      v-if="showRegisterAsMarker"
+      @close="closeRegisterAsMarker"
+      @register="registerAsMarker"
+    >
+    </register-as-marker-view>
   </div>
 </template>
 
 <script>
   import Env from './environment/index';
-  import Vue from 'vue'
-  import Vue2TouchEvents from 'vue2-touch-events'
-
-  Vue.use(Vue2TouchEvents);
+  import RegisterAsMarkerView from "./components/RegisterAsMarkerView";
 
   export default {
     name: "App",
+    components: {RegisterAsMarkerView},
     data () {
       return {
         apiKey: Env.API_KEY,
         lat: 0,
         lng: 0,
-        markers: []
+        markers: [],
+        showRegisterAsMarker: false
       }
     },
     mounted() {
@@ -49,6 +54,20 @@
       },
       showAddMarker(e) {
         console.log(e);
+        this.openRegisterAsMarker();
+      },
+      openRegisterAsMarker() {
+        this.showRegisterAsMarker = true;
+      },
+      closeRegisterAsMarker() {
+        this.showRegisterAsMarker = false;
+      },
+      registerAsMarker(categoryId, name, memo) {
+        console.log(categoryId);
+        console.log(name);
+        console.log(memo);
+        this.showRegisterAsMarker = false;
+        // マーカー登録API呼び出し
       }
     }
   }

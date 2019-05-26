@@ -10,6 +10,7 @@
     </g-map>
     <register-as-marker-view
       v-if="showRegisterAsMarker"
+      :categories="this.categories"
       @close="closeRegisterAsMarker"
       @register="registerAsMarker"
     >
@@ -20,6 +21,7 @@
 <script>
   import Env from './environment/index';
   import RegisterAsMarkerView from "./components/RegisterAsMarkerView";
+  import axios from "axios";
 
   export default {
     name: "App",
@@ -29,6 +31,7 @@
         apiKey: Env.API_KEY,
         lat: 0,
         lng: 0,
+        categories: [],
         markers: [],
         showRegisterAsMarker: false
       }
@@ -38,6 +41,7 @@
       navigator.geolocation.getCurrentPosition((position) => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
+        this.getCategories();
         this.fetchMarkers();
       });
     },
@@ -51,6 +55,12 @@
           { position: { lat: 35.762069, lng: 139.534245 } },
           { position: { lat: 35.762033, lng: 139.533656 } },
         ]
+      },
+      getCategories() {
+        axios.get('/api/categories')
+          .then((res) => {
+            this.categories = res.data;
+          });
       },
       showAddMarker(e) {
         console.log(e);

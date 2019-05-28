@@ -9,9 +9,15 @@
         @showBookmark="openBookmark"
       >
     </g-map>
-    <md-button class="md-icon-button md-raised md-accent menu-button">
+    <md-button class="md-icon-button md-raised md-accent menu-button" @click="openSideMenu">
       <md-icon>menu</md-icon>
     </md-button>
+    <md-drawer :md-active.sync="showSideMenu" md-swipeable>
+      <side-menu-view
+        @openBookmarksView="openBookmarks"
+      >
+      </side-menu-view>
+    </md-drawer>
     <register-as-marker-view
       v-if="showRegisterAsMarker"
       :categories="this.categories"
@@ -26,6 +32,12 @@
       @close="closeBookmark"
     >
     </bookmark-small-view>
+    <bookmarks-view
+      v-if="showBookmarks"
+      :bookmarks="this.markers"
+      @close="closeBookmarks"
+    >
+    </bookmarks-view>
   </div>
 </template>
 
@@ -33,11 +45,13 @@
   import Env from './environment/index';
   import RegisterAsMarkerView from "./components/RegisterAsMarkerView";
   import BookmarkSmallView from "./components/BookmarkSmallView";
+  import SideMenuView from "./components/SideMenuView";
   import axios from "axios";
+  import BookmarksView from "./components/BookmarksView";
 
   export default {
     name: "App",
-    components: {RegisterAsMarkerView, BookmarkSmallView},
+    components: {BookmarksView, SideMenuView, RegisterAsMarkerView, BookmarkSmallView},
     data () {
       return {
         apiKey: Env.API_KEY,
@@ -48,8 +62,10 @@
         selectedLat: null,
         selectedLng: null,
         currentBookmark: {},
+        showSideMenu: false,
         showRegisterAsMarker: false,
-        showBookmarkSmallView: false
+        showBookmarkSmallView: false,
+        showBookmarks: false,
       }
     },
     mounted() {
@@ -96,6 +112,19 @@
       },
       showAddMarker(e) {
         this.openRegisterAsMarker(e.latLng.lat(), e.latLng.lng());
+      },
+      openSideMenu() {
+        this.showSideMenu = true;
+      },
+      closeSideMenu() {
+        this.showSideMenu = false;
+      },
+      openBookmarks() {
+        this.closeSideMenu();
+        this.showBookmarks = true;
+      },
+      closeBookmarks() {
+        this.showBookmarks = false;
       },
       openRegisterAsMarker(lat, lng) {
         this.selectedLat = lat;

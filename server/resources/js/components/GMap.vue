@@ -95,12 +95,14 @@
         this.addMarker();
       },
       addMarker() {
+        let tempLabels = ["🍴", "🍱", "🍣", "🍜", "🍚", "粉", "郷", "🥘", "🥟", "🍽", "🍝", "仏", "🥓", "🥙", "🥩", "串", "🍲", "🥓", "🍻", "☕️", "🍔", "🍽", "🍴"];
         this.markers.forEach(markerInfo => {
-          let contentString = "hoge";
+          let contentString = markerInfo.name;
           let marker = new this.google.maps.Marker({
             position: markerInfo.position,
             map: this.map,
-            animation: this.google.maps.Animation.DROP
+            animation: this.google.maps.Animation.DROP,
+            label: tempLabels[markerInfo.categoryId],
           });
 
           let infoWindow = new this.google.maps.InfoWindow({
@@ -110,7 +112,8 @@
           marker.addListener("click", () => {
             event.stopPropagation();
 
-            infoWindow.open(this.map, marker)
+            infoWindow.open(this.map, marker);
+            this.$emit('showBookmark', markerInfo);
           });
 
           this.formattedMarkers.push(marker);

@@ -8,8 +8,12 @@ use App\Models\Bookmark;
 
 class BookmarkController extends Controller
 {
-    public function index() {
-        $bookmarks = Bookmark::all();
+    public function index(Request $request) {
+        // 拡大率を元に取得範囲を設定
+        $zoom = $request->zoom ? $request->zoom : 12;
+        $distance = 5;
+
+        $bookmarks = Bookmark::with('category')->get();
         return $bookmarks;
     }
 
@@ -22,6 +26,8 @@ class BookmarkController extends Controller
         $bookmark->lat = $request->lat;
         $bookmark->lng = $request->lng;
         $bookmark->user_id = 1;
+        $bookmark->save();
+        return $bookmark;
     }
 
     public function update(Request $request, $id) {
@@ -33,6 +39,7 @@ class BookmarkController extends Controller
         $bookmark->lat = $request->lat;
         $bookmark->lng = $request->lng;
         $bookmark->save();
+        return $bookmark;
     }
 
     public function destroy($id) {

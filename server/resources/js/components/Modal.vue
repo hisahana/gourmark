@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask">
+    <div class="modal-mask" :class="isTransparent ? 'transparent' : ''">
       <div class="modal-wrapper" @click.self="$emit('close')">
         <slot/>
       </div>
@@ -11,7 +11,12 @@
 <script>
   export default {
     name: "Modal",
-    props: {}
+    props: {
+      isTransparent: {
+        type: Boolean,
+        default: false
+      }
+    }
   }
 </script>
 
@@ -26,6 +31,9 @@
     background-color: rgba(0, 0, 0, .5);
     display: table;
     transition: opacity .3s ease;
+  }
+  .modal-mask.transparent {
+    background-color: transparent;
   }
   .modal-wrapper {
     display: table-cell;

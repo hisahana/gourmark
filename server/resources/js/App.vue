@@ -6,7 +6,7 @@
         :lng="this.lng"
         :markers="this.markers"
         @longClick="showAddMarker"
-        @showBookmark="openBookmark"
+        @showBookmark="openBookmarkSmall"
       >
     </g-map>
     <md-button class="md-icon-button md-raised md-accent menu-button" @click="openSideMenu">
@@ -29,12 +29,21 @@
       v-if="showBookmarkSmallView"
       :categories="this.categories"
       :bookmark="this.currentBookmark"
-      @close="closeBookmark"
+      @openBookmark="openBookmark"
+      @close="closeBookmarkSmall"
     >
     </bookmark-small-view>
+    <bookmark-view
+      v-if="showBookmarkView"
+      :bookmark="this.currentBookmark"
+      @delete="deleteBookmark"
+      @close="closeBookmark"
+    >
+    </bookmark-view>
     <bookmarks-view
       v-if="showBookmarks"
       :bookmarks="this.markers"
+      @moveToBookmark="moveToBookmark"
       @close="closeBookmarks"
     >
     </bookmarks-view>
@@ -48,10 +57,11 @@
   import SideMenuView from "./components/SideMenuView";
   import axios from "axios";
   import BookmarksView from "./components/BookmarksView";
+  import BookmarkView from "./components/BookmarkView";
 
   export default {
     name: "App",
-    components: {BookmarksView, SideMenuView, RegisterAsMarkerView, BookmarkSmallView},
+    components: {BookmarkView, BookmarksView, SideMenuView, RegisterAsMarkerView, BookmarkSmallView},
     data () {
       return {
         apiKey: Env.API_KEY,
@@ -65,6 +75,7 @@
         showSideMenu: false,
         showRegisterAsMarker: false,
         showBookmarkSmallView: false,
+        showBookmarkView: false,
         showBookmarks: false,
       }
     },
@@ -81,6 +92,7 @@
     },
     methods: {
       fetchMarkers() {
+        this.markers = [];
         // 現在位置付近のマーカーを取得
         axios.get('/api/bookmarks')
           .then((res) => {
@@ -152,13 +164,39 @@
           });
         this.closeRegisterAsMarker();
       },
-      openBookmark(bookmark) {
+      openBookmarkSmall(bookmark) {
         this.currentBookmark = bookmark;
         this.showBookmarkSmallView = true;
       },
-      closeBookmark() {
-        this.currentBookmark = {};
+      closeBookmarkSmall() {
         this.showBookmarkSmallView = false;
+        this.currentBookmark = {};
+      },
+      openBookmark() {
+        this.showBookmarkSmallView = false;
+        this.showBookmarkView = true;
+      },
+      closeBookmark() {
+        this.showBookmarkView = false;
+        this.currentBookmark = {};
+      },
+      moveToBookmark(bookmark) {
+        this.closeBookmarks();
+        this.lat = bookmark.position.lat;
+        this.lng = bookmark.position.lng;
+        this.currentBookmark = bookmark;
+        this.showBookmarkSmallView = true;
+      },
+      deleteBookmark() {
+        this.showBookmarkView = false;
+        axios.delete('/api/bookmarks/'+this.currentBookmark.id)
+          .then((res) => {
+            console.log(res);
+            this.fetchMarkers();
+          })
+          .finally(() => {
+            this.currentBookmark = {};
+          });
       }
     }
   }

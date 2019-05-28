@@ -1,6 +1,6 @@
 <template>
   <modal class="modal" :isTransparent="true" @close="closeModal">
-    <div class="modal-container">
+    <div class="modal-container" @click="$emit('openBookmark')">
       <p>{{ bookmark.categoryName }}</p>
       <h1>{{ bookmark.name }}</h1>
       <p style="white-space: pre-wrap">{{ bookmark.memo }}</p>

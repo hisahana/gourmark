@@ -9,7 +9,7 @@
     <md-divider></md-divider>
     <md-list>
       <div v-for="bookmark in bookmarks">
-        <md-list-item>
+        <md-list-item @click="$emit('moveToBookmark', bookmark)">
           <div class="md-list-item-text">
             <span class="category-name">{{ bookmark.categoryName }}</span>
             <p class="bookmark-name">{{ bookmark.name }}</p>

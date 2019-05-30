@@ -37,9 +37,18 @@
       v-if="showBookmarkView"
       :bookmark="this.currentBookmark"
       @delete="deleteBookmark"
+      @edit="openBookmarkEdit"
       @close="closeBookmark"
     >
     </bookmark-view>
+    <bookmark-edit-view
+      v-if="showBookmarkEditView"
+      :categories="this.categories"
+      :bookmark="this.currentBookmark"
+      @submit="submitBookmarkEdit"
+      @close="closeBookmarkEdit"
+    >
+    </bookmark-edit-view>
     <bookmarks-view
       v-if="showBookmarks"
       :bookmarks="this.markers"
@@ -58,10 +67,11 @@
   import axios from "axios";
   import BookmarksView from "./components/BookmarksView";
   import BookmarkView from "./components/BookmarkView";
+  import BookmarkEditView from "./components/BookmarkEditView";
 
   export default {
     name: "App",
-    components: {BookmarkView, BookmarksView, SideMenuView, RegisterAsMarkerView, BookmarkSmallView},
+    components: {BookmarkEditView, BookmarkView, BookmarksView, SideMenuView, RegisterAsMarkerView, BookmarkSmallView},
     data () {
       return {
         apiKey: Env.API_KEY,
@@ -76,6 +86,7 @@
         showRegisterAsMarker: false,
         showBookmarkSmallView: false,
         showBookmarkView: false,
+        showBookmarkEditView: false,
         showBookmarks: false,
       }
     },
@@ -191,12 +202,33 @@
         this.showBookmarkView = false;
         axios.delete('/api/bookmarks/'+this.currentBookmark.id)
           .then((res) => {
-            console.log(res);
             this.fetchMarkers();
           })
           .finally(() => {
             this.currentBookmark = {};
           });
+      },
+      openBookmarkEdit() {
+        this.showBookmarkEditView = true;
+      },
+      closeBookmarkEdit() {
+        this.showBookmarkEditView = false;
+      },
+      submitBookmarkEdit(categoryId, name, memo) {
+        let bookmark = {
+          'categoryId': categoryId,
+          'name': name,
+          'memo': memo,
+        };
+
+        axios.patch('/api/bookmarks/' + this.currentBookmark.id, bookmark)
+          .then((res) => {
+            this.fetchMarkers();
+          });
+
+        this.showBookmarkEditView = false;
+        this.showBookmarkView = false;
+        this.currentBookmark = {};
       }
     }
   }

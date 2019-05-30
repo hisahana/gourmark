@@ -35,9 +35,6 @@ class BookmarkController extends Controller
         $bookmark->category_id = $request->categoryId;
         $bookmark->name = $request->name;
         $bookmark->memo = $request->memo;
-        $bookmark->image_path = null;
-        $bookmark->lat = $request->lat;
-        $bookmark->lng = $request->lng;
         $bookmark->save();
         return $bookmark;
     }

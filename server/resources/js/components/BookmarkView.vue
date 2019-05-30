@@ -13,7 +13,7 @@
     </md-content>
     <div class="btn-group">
       <md-button class="md-raised md-accent btn" @click="$emit('delete')">削除</md-button>
-      <md-button class="md-raised md-primary btn">編集</md-button>
+      <md-button class="md-raised md-primary btn" @click="$emit('edit')">編集</md-button>
     </div>
   </div>
 </template>

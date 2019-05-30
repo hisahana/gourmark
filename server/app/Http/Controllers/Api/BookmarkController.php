@@ -13,7 +13,7 @@ class BookmarkController extends Controller
         $zoom = $request->zoom ? $request->zoom : 12;
         $distance = 5;
 
-        $bookmarks = Bookmark::with('category')->get();
+        $bookmarks = Bookmark::with('category')->orderBy('id', 'desc')->get();
         return $bookmarks;
     }
 
